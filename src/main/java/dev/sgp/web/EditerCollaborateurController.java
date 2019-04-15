@@ -15,7 +15,7 @@ public class EditerCollaborateurController extends HttpServlet {
 		
 		String matricule = req.getParameter("matricule");
 			
-		if(matricule == null) {
+		if(matricule.isEmpty()) {
 			resp.sendError(400, "Un matricule est attendu");
 		} else {
 		resp.getWriter().write("<h1>Edition de collaborateur</h1>"
@@ -32,13 +32,13 @@ public class EditerCollaborateurController extends HttpServlet {
 		String nom = req.getParameter("nom");
 		String prenom = req.getParameter("prenom");
 		
-		if(matricule == null) {
+		if(matricule.isEmpty()) {
 			resp.sendError(400, "Un matricule est attendu");
-		}else if(titre == null) {
+		}else if(titre.isEmpty()) {
 			resp.sendError(400, "Un titre est attendu");
-		}else if(nom == null) {
+		}else if(nom.isEmpty()) {
 			resp.sendError(400, "Un nom est attendu");
-		}else if(prenom == null) {
+		}else if(prenom.isEmpty()) {
 			resp.sendError(400, "Un prenom est attendu");
 		}else {
 			resp.setStatus(201);
