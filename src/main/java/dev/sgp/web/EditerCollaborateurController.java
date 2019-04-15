@@ -1,6 +1,8 @@
 package dev.sgp.web;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -15,7 +17,7 @@ public class EditerCollaborateurController extends HttpServlet {
 		
 		String matricule = req.getParameter("matricule");
 			
-		if(matricule.isEmpty()) {
+		if(matricule == null || matricule.isEmpty()) {
 			resp.sendError(400, "Un matricule est attendu");
 		} else {
 		resp.getWriter().write("<h1>Edition de collaborateur</h1>"
@@ -32,24 +34,23 @@ public class EditerCollaborateurController extends HttpServlet {
 		String nom = req.getParameter("nom");
 		String prenom = req.getParameter("prenom");
 		
-		if(matricule.isEmpty()) {
-			resp.sendError(400, "Un matricule est attendu");
-		}else if(titre.isEmpty()) {
-			resp.sendError(400, "Un titre est attendu");
-		}else if(nom.isEmpty()) {
-			resp.sendError(400, "Un nom est attendu");
-		}else if(prenom.isEmpty()) {
-			resp.sendError(400, "Un prenom est attendu");
-		}else {
-			resp.setStatus(201);
-			resp.getWriter().write("<h1>Edition de collaborateur</h1>"
+		ArrayList<String> parameters = new ArrayList<>();
+		parameters.addAll(Arrays.asList("matricule", "titre", "nom", "prenom"));
+		
+		for(String s: parameters){
+			if(req.getParameter(s) == null || req.getParameter(s).isEmpty()) {
+				resp.sendError(400, "Le paramètre suivant est attendu: " + s);
+			}
+		}
+			
+		resp.setStatus(201);
+		 resp.getWriter().write("<h1>Edition de collaborateur</h1>"
 					+ "\n<h2>Creation d'un collaborateur avec les informations suivantes:</h2>"
 					+ "<br /><h3>Matricule: " + matricule
 					+ "<br />Titre: " + titre
 					+ "<br />Nom: " + nom
 					+ "<br />Prenom: " + prenom
 					+ "</h3>");
-		}
 		
 	}
 	
