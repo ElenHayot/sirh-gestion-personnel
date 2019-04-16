@@ -1,13 +1,19 @@
 package dev.sgp.web;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import dev.sgp.entite.Collaborateur;
+import dev.sgp.service.CollaborateurService;
+import dev.sgp.util.Constantes;
 
 public class EditerCollaborateurController extends HttpServlet {
 
@@ -15,43 +21,29 @@ public class EditerCollaborateurController extends HttpServlet {
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
 					throws ServletException, IOException {
 		
-		String matricule = req.getParameter("matricule");
-			
-		if(matricule == null || matricule.isEmpty()) {
-			resp.sendError(400, "Un matricule est attendu");
-		} else {
-		resp.getWriter().write("<h1>Edition de collaborateur</h1>"
-				+ "\n<h3>Matricule : " + matricule + "</h3>");
-		}
+		req.getRequestDispatcher("/WEB-INF/views/collab/editerCollaborateur.jsp")
+		.forward(req,  resp);
 		
 	}
 	
+	
+	private CollaborateurService collabService = Constantes.COLLAB_SERVICE;
+	
+	
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp)
-					throws ServletException, IOException {
+			throws ServletException, IOException {
 		
-		String matricule = req.getParameter("matricule");
-		String titre = req.getParameter("titre");
-		String nom = req.getParameter("nom");
-		String prenom = req.getParameter("prenom");
-		
-		ArrayList<String> parameters = new ArrayList<>();
-		parameters.addAll(Arrays.asList("matricule", "titre", "nom", "prenom"));
-		
-		for(String s: parameters){
-			if(req.getParameter(s) == null || req.getParameter(s).isEmpty()) {
-				resp.sendError(400, "Le paramètre suivant est attendu: " + s);
-			}
-		}
-			
-		resp.setStatus(201);
-		 resp.getWriter().write("<h1>Edition de collaborateur</h1>"
-					+ "\n<h2>Creation d'un collaborateur avec les informations suivantes:</h2>"
-					+ "<br /><h3>Matricule: " + matricule
-					+ "<br />Titre: " + titre
-					+ "<br />Nom: " + nom
-					+ "<br />Prenom: " + prenom
-					+ "</h3>");
-		
+		Collaborateur collab = new Collaborateur();
+		collab.setNom(req.getParameter("name"));
+		collab.setPrenom(req.getParameter("firstname"));
+		collab.setDateNaissanceS(req.getParameter("birthday"));
+		collab.setAdresse(req.getParameter("adress"));
+		collab.setNumeroSecu(req.getParameter("socialcode"));
+		collabService.sauvegarderCollaborateur(collab);
+
+		req.setAttribute("collaborateurs", collabService.listerCollaborateurs());
+		req.getRequestDispatcher("/WEB-INF/views/collab/listerCollaborateurs.jsp")
+		.forward(req,  resp);
 	}
 	
 }
